@@ -53,12 +53,13 @@ setappdata(slider, 'finalRGB', initialRGB);
 % track a face. The loop will run for 400 frames or until the video player
 % window is closed.
 
-runLoop = true;
+camOpen = true;
+guiOpen = true;
 numPts = 0;
 frameCount = 0;
 
 % Endlosschleife für die Live-Videoverarbeitung
-while runLoop
+while camOpen && guiOpen
     % Get the next frame.
     videoFrame = snapshot(cam);
     videoFrameGray = im2gray(videoFrame);
@@ -183,7 +184,8 @@ while runLoop
         step(videoPlayer, videoFrame);
 
         % Check whether the video player window has been closed.
-        runLoop = isOpen(videoPlayer);
+        camOpen = isOpen(videoPlayer);
+        guiOpen = ~isempty(findobj('name','RGB Sliders'));
 
 end
 
@@ -193,6 +195,8 @@ end
     release(videoPlayer);
     release(pointTracker);
     release(faceDetector);
+    delete(findall(0));
+
 
     % Funktion, um Ellipsenpunkte zu berechnen
     function vertices = ellipseToPolygon(centerX, centerY, width, height, numPoints)
