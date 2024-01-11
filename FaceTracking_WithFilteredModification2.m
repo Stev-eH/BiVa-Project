@@ -84,21 +84,18 @@ while camOpen && guiOpen
         bboxes = 2 * faceDetector.step(imresize(frame, 0.5));
 
         % Wenn ein Gesicht erkannt wurde
-        if ~isempty(bbox)
+        if ~isempty(bboxes)
             tracker.addDetections(frame, bboxes);
 
             % Augenpositionen für den Punkttracker aus den BoundingBox-Koordinaten extrahieren
-            eyes = [bbox(1, 1) + bbox(1, 3)/4, bbox(1, 2) + bbox(1, 4)/4;...
-                bbox(1, 1) + 3*bbox(1, 3)/4, bbox(1, 2) + bbox(1, 4)/4];
-
-
-         
+            eyes = [bboxes(1, 1) + bboxes(1, 3)/4, bboxes(1, 2) + bboxes(1, 4)/4;...
+                bboxes(1, 1) + 3*bboxes(1, 3)/4, bboxes(1, 2) + bboxes(1, 4)/4];
 
             % Koordinaten für das Oval berechnen
-            x = bbox(1, 1);
-            y = bbox(1, 2);
-            width = bbox(1, 3);
-            height = bbox(1, 4);
+            x = bboxes(1, 1);
+            y = bboxes(1, 2);
+            width = bboxes(1, 3);
+            height = bboxes(1, 4);
 
             % Faktor für die Ovalform
             ovalFactor = 0.8;
@@ -107,7 +104,7 @@ while camOpen && guiOpen
             % M-by-2 matrix of [x,y] coordinates of the four corners. This
             % is needed to be able to transform the bounding box to display
             % the orientation of the face.
-            bboxPoints = bbox2points(bbox(1, :)); 
+            bboxPoints = bbox2points(bboxes(1, :)); 
 
             % Manuell ein gefülltes Oval um das Gesicht zeichnen
             ellipseVertices = ellipseToPolygon(x + width/2, y + height/2, width*ovalFactor, height, 100);
@@ -135,10 +132,10 @@ while camOpen && guiOpen
 % Code by us
 % --------------------------------------------------------------------------------------------
 % Create a meshgrid of coordinates for the image
-[xq, yq] = meshgrid(1:size(videoFrameGray, 2), 1:size(videoFrameGray, 1));
+[xq, yq] = meshgrid(1:size(frame, 2), 1:size(frame, 1));
 
 % Initialize insidePolygon
-insidePolygon = false(size(videoFrameGray, 1) * size(videoFrameGray, 2), 1);
+insidePolygon = false(size(frame, 1) * size(frame, 2), 1);
 
 % Check which points in the meshgrid are inside the polygons
 for boxIndex = 1:numFoundboxes
