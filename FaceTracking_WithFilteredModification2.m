@@ -100,12 +100,6 @@ while camOpen && guiOpen
             % Faktor für die Ovalform
             ovalFactor = 0.8;
 
-            % Convert the rectangle represented as [x, y, w, h] into an
-            % M-by-2 matrix of [x,y] coordinates of the four corners. This
-            % is needed to be able to transform the bounding box to display
-            % the orientation of the face.
-            bboxPoints = bbox2points(bboxes(1, :)); 
-
             % Manuell ein gefülltes Oval um das Gesicht zeichnen
             ellipseVertices = ellipseToPolygon(x + width/2, y + height/2, width*ovalFactor, height, 100);
 %            framergb = insertShape(framergb, 'FilledPolygon', ellipseVertices(i, :, :), 'Color', 'red');
